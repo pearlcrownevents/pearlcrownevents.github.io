@@ -94,6 +94,7 @@
             align-items: center;
             gap: 10px;
             margin-right: auto; 
+            white-space: nowrap; /* Keeps name on one line */
         }
 
         .logo i {
@@ -198,6 +199,43 @@
             background-color: var(--white);
         }
 
+        /* New Styling for Split Title */
+        .section-title-wrapper {
+            margin-bottom: 20px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .welcome-text {
+            display: block;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .brand-name-text {
+            display: block;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .section-title-wrapper::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-gold);
+            margin: 15px auto 0;
+        }
+
+        /* Standard section title for other sections */
         .section-title {
             font-size: 2.5rem;
             margin-bottom: 10px;
@@ -407,8 +445,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(15, 30, 86, 0.85); /* Primary blue with transparency */
-            z-index: 2000; /* Higher than header */
+            background-color: rgba(15, 30, 86, 0.85);
+            z-index: 2000;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -460,13 +498,19 @@
         .modal-btn {
             margin-top: 20px;
             width: 100%;
-            margin-left: 0; /* Override desktop CTA margin */
+            margin-left: 0;
         }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
             header { justify-content: space-between; }
-            .logo { margin-right: 0; }
+            
+            /* Adjusted logo size for mobile to fit "Pearl Crown Events" */
+            .logo { 
+                margin-right: 0; 
+                font-size: 1.1rem; /* Slightly smaller for mobile */
+            }
+            
             .menu-toggle { display: block; }
             .cta-btn.desktop-only { display: none; }
             
@@ -486,7 +530,13 @@
             nav a { display: block; padding: 15px; width: 100%; font-size: 1.1rem; }
             .mobile-cta { margin-top: 15px; display: inline-block; }
             .mobile-cta .cta-btn { margin-left: 0; width: 80%; }
+            
             #home h1 { font-size: 2.5rem; }
+            
+            /* Responsive text for the new About Title */
+            .brand-name-text { font-size: 1.8rem; }
+            .welcome-text { font-size: 0.9rem; }
+            
             .whatsapp-float { width: 50px; height: 50px; bottom: 20px; right: 20px; font-size: 25px; }
         }
         @media (min-width: 769px) { .mobile-only { display: none; } }
@@ -497,7 +547,7 @@
     <!-- Header & Navigation -->
     <header>
         <a href="#" class="logo">
-            <i class="fas fa-crown"></i> Pearl Crown
+            <i class="fas fa-crown"></i> Pearl Crown Events
         </a>
 
         <nav id="navbar">
@@ -528,9 +578,13 @@
         <a href="#contact" class="btn-main">Plan My Event</a>
     </section>
 
-    <!-- About Section -->
+    <!-- About Section with NEW SPLIT TITLE -->
     <section id="about">
-        <h2 class="section-title">Welcome to Pearl Crown Events</h2>
+        <div class="section-title-wrapper">
+            <span class="welcome-text">Welcome to</span>
+            <span class="brand-name-text">Pearl Crown Events</span>
+        </div>
+        
         <p>
             We are dedicated to turning your special moments into unforgettable memories. 
             From intimate gatherings to grand celebrations, we handle every detail with precision and care.
@@ -662,7 +716,6 @@
             <h2 class="modal-title">Request Received</h2>
             <p class="modal-text">Thank you for choosing Pearl Crown Events.</p>
             <p class="modal-text">We will review your details and contact you shortly at <strong>+91 73868 79771</strong>.</p>
-            <!-- Close Button reusing existing button styles -->
             <button class="cta-btn modal-btn" onclick="closeModal()">Close</button>
         </div>
     </div>
@@ -694,7 +747,6 @@
             modal.classList.remove('active');
         }
 
-        // Close modal if user clicks outside the white box
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
                 closeModal();
@@ -712,13 +764,11 @@
 
             emailjs.sendForm('service_fgzclff', 'template_936ae1v', '#bookingForm')
                 .then(function() {
-                    // SUCCESS: Reset Button, Clear Form, Show Custom Modal
                     btn.innerText = originalText;
                     btn.disabled = false;
                     document.getElementById("bookingForm").reset();
                     openModal(); 
                 }, function(error) {
-                    // ERROR: Reset Button, Show Standard Alert
                     btn.innerText = originalText;
                     btn.disabled = false;
                     console.log('FAILED...', error);
