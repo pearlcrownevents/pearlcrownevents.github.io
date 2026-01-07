@@ -134,6 +134,8 @@
             align-items: center;
             justify-content: center;
             margin-left: 30px; 
+            border: none;
+            cursor: pointer;
         }
 
         .cta-btn:hover {
@@ -398,24 +400,76 @@
             transform: scale(1.1);
         }
 
-        /* --- RESPONSIVE / MOBILE STYLES --- */
+        /* --- CUSTOM ROYAL MODAL (Success Popup) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 30, 86, 0.85); /* Primary blue with transparency */
+            z-index: 2000; /* Higher than header */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background-color: var(--white);
+            width: 90%;
+            max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: translateY(0);
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .modal-btn {
+            margin-top: 20px;
+            width: 100%;
+            margin-left: 0; /* Override desktop CTA margin */
+        }
+
+        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
-            header {
-                justify-content: space-between;
-            }
-
-            .logo {
-                margin-right: 0; 
-            }
-
-            .menu-toggle {
-                display: block; 
-            }
-
-            .cta-btn.desktop-only {
-                display: none;
-            }
-
+            header { justify-content: space-between; }
+            .logo { margin-right: 0; }
+            .menu-toggle { display: block; }
+            .cta-btn.desktop-only { display: none; }
+            
             nav {
                 position: absolute;
                 top: var(--header-height);
@@ -426,57 +480,16 @@
                 display: none; 
                 padding: 20px 0;
             }
-
-            nav.active {
-                display: flex;
-            }
-
-            nav ul {
-                flex-direction: column;
-                width: 100%;
-                gap: 0;
-            }
-
-            nav ul li {
-                width: 100%;
-                text-align: center;
-            }
-
-            nav a {
-                display: block;
-                padding: 15px;
-                width: 100%;
-                font-size: 1.1rem;
-            }
-
-            .mobile-cta {
-                margin-top: 15px;
-                display: inline-block;
-            }
-
-            .mobile-cta .cta-btn {
-                margin-left: 0; 
-                width: 80%; 
-            }
-
-            #home h1 {
-                font-size: 2.5rem;
-            }
-
-            .whatsapp-float {
-                width: 50px;
-                height: 50px;
-                bottom: 20px;
-                right: 20px;
-                font-size: 25px;
-            }
+            nav.active { display: flex; }
+            nav ul { flex-direction: column; width: 100%; gap: 0; }
+            nav ul li { width: 100%; text-align: center; }
+            nav a { display: block; padding: 15px; width: 100%; font-size: 1.1rem; }
+            .mobile-cta { margin-top: 15px; display: inline-block; }
+            .mobile-cta .cta-btn { margin-left: 0; width: 80%; }
+            #home h1 { font-size: 2.5rem; }
+            .whatsapp-float { width: 50px; height: 50px; bottom: 20px; right: 20px; font-size: 25px; }
         }
-
-        @media (min-width: 769px) {
-            .mobile-only {
-                display: none;
-            }
-        }
+        @media (min-width: 769px) { .mobile-only { display: none; } }
     </style>
 </head>
 <body>
@@ -609,16 +622,10 @@
                 </div>
             </div>
 
-            <!-- IMPORTANT: Form updated with IDs and Name attributes for EmailJS -->
             <div class="contact-form">
                 <form id="bookingForm" onsubmit="submitForm(event)">
-                    <!-- name="user_name" matches the {{user_name}} in your email template -->
                     <input type="text" name="user_name" placeholder="Your Name" required>
-                    
-                    <!-- name="phone_number" matches the {{phone_number}} in your email template -->
                     <input type="tel" name="phone_number" placeholder="Phone Number" required>
-                    
-                    <!-- name="event_type" matches the {{event_type}} in your email template -->
                     <select name="event_type" required>
                         <option value="" disabled selected>Event Type</option>
                         <option value="Wedding">Wedding</option>
@@ -630,10 +637,7 @@
                         <option value="HalfSaree">Half-Saree Function</option>
                         <option value="Other">Other</option>
                     </select>
-                    
-                    <!-- name="message" matches the {{message}} in your email template -->
                     <textarea name="message" rows="5" placeholder="Tell us about your event (Date, Venue, etc.)" required></textarea>
-                    
                     <button type="submit">Send Enquiry</button>
                 </form>
             </div>
@@ -651,9 +655,21 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
+    <!-- CUSTOM ROYAL MODAL (Hidden by default) -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-box">
+            <i class="fas fa-crown modal-icon"></i>
+            <h2 class="modal-title">Request Received</h2>
+            <p class="modal-text">Thank you for choosing Pearl Crown Events.</p>
+            <p class="modal-text">We will review your details and contact you shortly at <strong>+91 73868 79771</strong>.</p>
+            <!-- Close Button reusing existing button styles -->
+            <button class="cta-btn modal-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script>
-        // Mobile Menu Toggle logic
+        // --- MOBILE MENU LOGIC ---
         const menuToggle = document.getElementById('mobile-menu');
         const navbar = document.getElementById('navbar');
 
@@ -667,29 +683,46 @@
             });
         });
 
+        // --- MODAL LOGIC ---
+        const modal = document.getElementById('successModal');
+
+        function openModal() {
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Close modal if user clicks outside the white box
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
         // --- EMAIL JS SEND LOGIC ---
         function submitForm(event) {
-            event.preventDefault(); // Stop page reload
+            event.preventDefault(); 
 
-            // Get the button to change text while sending
-            const btn = event.target.querySelector('button');
+            const btn = event.target.querySelector('button[type="submit"]');
             const originalText = btn.innerText;
             btn.innerText = 'Sending...';
+            btn.disabled = true;
 
-            // Send the form using your IDs
-            // Service ID: service_fgzclff
-            // Template ID: template_936ae1v
             emailjs.sendForm('service_fgzclff', 'template_936ae1v', '#bookingForm')
                 .then(function() {
-                    // SUCCESS
+                    // SUCCESS: Reset Button, Clear Form, Show Custom Modal
                     btn.innerText = originalText;
-                    alert("Thank you! We have received your details. We will call you at +91 73868 79771 shortly.");
-                    document.getElementById("bookingForm").reset(); // Clear the form
+                    btn.disabled = false;
+                    document.getElementById("bookingForm").reset();
+                    openModal(); 
                 }, function(error) {
-                    // ERROR
+                    // ERROR: Reset Button, Show Standard Alert
                     btn.innerText = originalText;
+                    btn.disabled = false;
                     console.log('FAILED...', error);
-                    alert("Something went wrong with the server. Please verify your connection or call us directly.");
+                    alert("Unable to send request. Please verify your internet connection or call us directly.");
                 });
         }
     </script>
